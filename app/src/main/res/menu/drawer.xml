@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="Danh mục">
+        <menu>
+            <item
+
+                android:id="@+id/navigation_item_book"
+                android:icon="@drawable/sach"
+                android:title="@string/hoithao" />
+            <item
+                android:id="@+id/navigation_item_sport"
+                android:icon="@drawable/vanhoa"
+                android:title="@string/vanhoa" />
+            <item
+                android:id="@+id/v"
+                android:icon="@drawable/hoicho"
+                android:title="@string/hoicho" />
+            <item
+                android:id="@+id/vf"
+                android:icon="@drawable/thethao"
+                android:title="@string/thethao" />
+            <item
+
+                android:icon="@drawable/khaichuong"
+                android:title="@string/khaitruong" />
+            <item
+
+                android:icon="@drawable/khac"
+                android:title="@string/skkhac" />
+        </menu>
+    </item>
+    <item android:title="Người dùng">
+        <menu>
+            <item
+                android:id="@+id/register"
+                android:icon="@drawable/info"
+                android:title="@string/dangki" />
+        </menu>
+    </item>
+</menu>
