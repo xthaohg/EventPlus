@@ -1,19 +1,16 @@
-package com.example.hoangthao.eventplus.adapter;
+package com.poly.eventplus.model;
 
-/**
- * Created by hoangthao on 02/03/16.
- */
-public class ArrayNew {
-    String Tens;
-    String Thoigian;
-    String Hinhs;
-    String Danhmuc;
-    String Khuvuc;
-    String Sokhach;
-    String Donvi;
-    String Mota;
-    String Diadiem;
-    int Sdt;
+public class Event {
+    private String Tens;
+    private String Thoigian;
+    private String Hinhs;
+    private String Danhmuc;
+    private String Khuvuc;
+    private String Sokhach;
+    private String Donvi;
+    private String Mota;
+    private String Diadiem;
+    private int Sdt;
 
     public int getSdt() {
         return Sdt;
@@ -55,7 +52,7 @@ public class ArrayNew {
         return Danhmuc;
     }
 
-    public ArrayNew(String tens, String thoigian, String hinhs, String danhmuc, String khuvuc, String sokhach, String donvi, String mota, String diadiem, int sdt) {
+    public Event(String tens, String thoigian, String hinhs, String danhmuc, String khuvuc, String sokhach, String donvi, String mota, String diadiem, int sdt) {
         Tens = tens;
         Thoigian = thoigian;
         Hinhs = hinhs;

@@ -1,4 +1,4 @@
-package com.example.hoangthao.eventplus.Activity;
+package com.poly.eventplus.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,17 +6,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.hoangthao.eventplus.R;
 import com.koushikdutta.ion.Ion;
+import com.poly.eventplus.R;
 
-/**
- * Created by hoangthao on 20/02/16.
- */
 public class NewEvent extends AppCompatActivity {
     TextView tieude, time, danhmuc, sdt, sokhach, donvi, diadiem, mota;
     ImageView img;
@@ -64,7 +60,7 @@ public class NewEvent extends AppCompatActivity {
         String motas = bundle.getString("mota");
         int sdts = bundle.getInt("sdt");
 
-        sdt.setText(""  + sdts);
+        sdt.setText("" + sdts);
         time.setText(times);
         tieude.setText(tens);
         danhmuc.setText(danhmucs);

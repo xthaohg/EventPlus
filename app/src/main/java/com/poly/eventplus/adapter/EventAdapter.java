@@ -1,7 +1,6 @@
-package com.example.hoangthao.eventplus.adapter;
+package com.poly.eventplus.adapter;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,22 +8,19 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.hoangthao.eventplus.R;
 import com.koushikdutta.ion.Ion;
-import com.squareup.picasso.Picasso;
+import com.poly.eventplus.R;
+import com.poly.eventplus.model.Event;
 
 import java.util.List;
 
-/**
- * Created by hoangthao on 20/02/16.
- */
-public class Adapter extends ArrayAdapter<ArrayNew> {
+public class EventAdapter extends ArrayAdapter<Event> {
 
-    public Adapter(Context context, int textViewResourceId) {
+    public EventAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
     }
 
-    public Adapter(Context context, int resource, List<ArrayNew> items) {
+    public EventAdapter(Context context, int resource, List<Event> items) {
         super(context, resource, items);
     }
 
@@ -36,32 +32,29 @@ public class Adapter extends ArrayAdapter<ArrayNew> {
         if (v == null) {
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
-            v = vi.inflate(R.layout.listview, null);
+            v = vi.inflate(R.layout.event_adapter, null);
         }
 
-        ArrayNew p = getItem(position);
+        Event p = getItem(position);
 
         if (p != null) {
             // Anh xa + Gan gia tri
             TextView tt1 = (TextView) v.findViewById(R.id.tieude);
-            tt1.setText(p.Tens);
+            tt1.setText(p.getTens());
             TextView tt2 = (TextView) v.findViewById(R.id.danhmuc);
-            tt2.setText(String.valueOf("Danh mục: " + p.Danhmuc));
+            tt2.setText(String.valueOf("Danh mục: " + p.getDanhmuc()));
             TextView tt3 = (TextView) v.findViewById(R.id.thoigan);
-            tt3.setText(String.valueOf("Thời gian: " + p.Thoigian));
+            tt3.setText(String.valueOf("Thời gian: " + p.getThoigian()));
             TextView tt4 = (TextView) v.findViewById(R.id.khuvuc);
-            tt4.setText(String.valueOf("Khu vực: " + p.Khuvuc));
+            tt4.setText(String.valueOf("Khu vực: " + p.getDiadiem()));
 
-            //Ion.with((ImageView) v.findViewById(R.id.imageView)).load(p.Hinh);
             Ion.with(getContext())
-                    .load(p.Hinhs)
+                    .load(p.getHinhs())
                     .withBitmap()
                     .placeholder(R.drawable.ic_launcher)
                     .error(R.drawable.ic_launcher)
                     .intoImageView((ImageView) v.findViewById(R.id.imgv_1));
-
         }
-
         return v;
     }
 }

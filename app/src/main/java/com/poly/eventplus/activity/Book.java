@@ -1,13 +1,10 @@
-package com.example.hoangthao.eventplus.Activity;
+package com.poly.eventplus.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.example.hoangthao.eventplus.R;
+import com.poly.eventplus.R;
 
-/**
- * Created by hoangthao on 24/02/16.
- */
 public class Book extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

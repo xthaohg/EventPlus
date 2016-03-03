@@ -1,4 +1,4 @@
-package com.example.hoangthao.eventplus.Activity;
+package com.poly.eventplus.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,15 +7,10 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.hoangthao.eventplus.R;
-import com.example.hoangthao.eventplus.adapter.Adapter;
-import com.example.hoangthao.eventplus.adapter.ArrayNew;
+import com.poly.eventplus.R;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -25,25 +20,13 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- * Created by hoangthao on 27/02/16.
- */
 public class Splash extends Activity {
     private static final int REQUEST_CODE = 10;
     public static final String MyPREFERENCES = "MyPrefs";
@@ -142,5 +125,4 @@ public class Splash extends Activity {
 
         return kq;
     }
-
 }

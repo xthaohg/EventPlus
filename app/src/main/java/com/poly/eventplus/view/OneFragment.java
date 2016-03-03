@@ -1,5 +1,4 @@
-package com.example.hoangthao.eventplus.Activity;
-
+package com.poly.eventplus.view;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -14,9 +13,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.example.hoangthao.eventplus.R;
-import com.example.hoangthao.eventplus.adapter.Adapter;
-import com.example.hoangthao.eventplus.adapter.ArrayNew;
+import com.poly.eventplus.activity.NewEvent;
+import com.poly.eventplus.adapter.EventAdapter;
+import com.poly.eventplus.R;
+import com.poly.eventplus.model.Event;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -37,21 +37,19 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-/**
- * Created by hoangthao on 19/02/16.
- */
-public class TwoFragment extends Fragment {
+public class OneFragment extends Fragment {
+
     ListView lv;
-    ArrayList<ArrayNew> mang;
+    ArrayList<Event> mang;
     SwipeRefreshLayout mSwipeRefreshLayout;
 
-    public TwoFragment() {
+    public OneFragment() {
         super();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.twofragment, container, false);
+        return inflater.inflate(R.layout.onefragment, container, false);
 
     }
 
@@ -66,7 +64,7 @@ public class TwoFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.activity_main_swipe_refresh_layout2);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.activity_main_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -74,8 +72,8 @@ public class TwoFragment extends Fragment {
                 new ReadJson().execute("http://trieu.svnteam.net/Api/selectlist.php");
             }
         });
-        lv = (ListView) getActivity().findViewById(R.id.lv_2);
-        mang = new ArrayList<ArrayNew>();
+        lv = (ListView) getActivity().findViewById(R.id.lv_1);
+        mang = new ArrayList<Event>();
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -100,7 +98,7 @@ public class TwoFragment extends Fragment {
                 JSONArray jsonArray = new JSONArray(s);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject sp = jsonArray.getJSONObject(i);
-                    mang.add(new ArrayNew(
+                    mang.add(new Event(
                             sp.getString("name"),
                             sp.getString("time"),
                             sp.getString("img"),
@@ -113,11 +111,11 @@ public class TwoFragment extends Fragment {
                             sp.getInt("sdt")
                     ));
                 }
-                Adapter adapter = new Adapter(getActivity(), R.layout.listview, mang);
+                EventAdapter eventAdapter = new EventAdapter(getActivity(), R.layout.event_adapter, mang);
                 if (mSwipeRefreshLayout.isRefreshing()) {
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
-                lv.setAdapter(adapter);
+                lv.setAdapter(eventAdapter);
 
             } catch (JSONException e) {
                 e.printStackTrace();

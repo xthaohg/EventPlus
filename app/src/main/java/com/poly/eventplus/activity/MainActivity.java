@@ -1,4 +1,4 @@
-package com.example.hoangthao.eventplus.Activity;
+package com.poly.eventplus.activity;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,7 +22,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-import com.example.hoangthao.eventplus.R;
+import com.poly.eventplus.R;
+import com.poly.eventplus.view.OneFragment;
+import com.poly.eventplus.view.ThreeFragment;
+import com.poly.eventplus.view.TwoFragment;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.example.hoangthao.eventplus.adapter;
+package com.poly.eventplus.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,15 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.hoangthao.eventplus.R;
+import com.poly.eventplus.R;
 
 import java.util.List;
 
-/**
- * Created by hoangthao on 29/02/16.
- */
 public class DesignDemoRecyclerAdapter extends RecyclerView.Adapter<DesignDemoRecyclerAdapter.ViewHolder> {
-
     private List<String> mItems;
 
     DesignDemoRecyclerAdapter(List<String> items) {
@@ -48,5 +44,4 @@ public class DesignDemoRecyclerAdapter extends RecyclerView.Adapter<DesignDemoRe
             mTextView = (TextView) v.findViewById(R.id.list_item);
         }
     }
-
 }
