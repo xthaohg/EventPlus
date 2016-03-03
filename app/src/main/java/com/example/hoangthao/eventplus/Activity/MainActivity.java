@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private TextView txtUserName;
+
     private Toolbar mToolbar;
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String USERNAME = "userNameKey";
@@ -44,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-
         txtUserName = (TextView) findViewById(R.id.tv_username);
         // tc = (TextView)findViewById(R.id.tv)
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -52,15 +52,14 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.menu);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        viewPager = (ViewPager) findViewById(R.id.viewpager);
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
 
         setupViewPager(viewPager);
-
         tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
         NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
-
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -149,9 +148,9 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         switch (id) {
-//            case android.R.id.home:
-//                mDrawerLayout.openDrawer(GravityCompat.START);
-//                return true;
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
             case R.id.action_settings:
                 return true;
             case R.id.action_logout:
@@ -202,7 +201,6 @@ public class MainActivity extends AppCompatActivity {
                 arg0.dismiss();
             }
         });
-
         AlertDialog ad = adb.create();
         ad.show();
     }
