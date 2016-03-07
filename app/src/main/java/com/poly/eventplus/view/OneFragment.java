@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.widget.ListView;
 import com.poly.eventplus.activity.NewEvent;
 import com.poly.eventplus.adapter.EventAdapter;
 import com.poly.eventplus.R;
+import com.poly.eventplus.adapter.RecyclerAdapter;
 import com.poly.eventplus.model.Event;
 
 import org.apache.http.HttpEntity;
@@ -40,8 +43,10 @@ import java.util.ArrayList;
 public class OneFragment extends Fragment {
 
     ListView lv;
+    private RecyclerAdapter recyclerAdapter;
     ArrayList<Event> mang;
     SwipeRefreshLayout mSwipeRefreshLayout;
+    RecyclerView recyclerView;
 
     public OneFragment() {
         super();
@@ -49,8 +54,9 @@ public class OneFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.onefragment, container, false);
-
+        View view = inflater.inflate(R.layout.onefragment, container, false);
+        recyclerView = (RecyclerView) getActivity().findViewById(R.id.recyclerview);
+        return view;
     }
 
     @Override
@@ -111,11 +117,13 @@ public class OneFragment extends Fragment {
                             sp.getInt("sdt")
                     ));
                 }
-                EventAdapter eventAdapter = new EventAdapter(getActivity(), R.layout.event_adapter, mang);
+
+                EventAdapter eventAdapter = new EventAdapter(getActivity(), R.layout.recyclerview, mang);
                 if (mSwipeRefreshLayout.isRefreshing()) {
                     mSwipeRefreshLayout.setRefreshing(false);
                 }
                 lv.setAdapter(eventAdapter);
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -153,6 +161,7 @@ public class OneFragment extends Fragment {
             });
             // Toast.makeText(two.this, s, Toast.LENGTH_LONG).show();
         }
+
     }
 
     //DOc file json ve may

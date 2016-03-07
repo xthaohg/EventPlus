@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.koushikdutta.ion.Ion;
 import com.poly.eventplus.R;
 import com.poly.eventplus.model.Event;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -46,14 +47,18 @@ public class EventAdapter extends ArrayAdapter<Event> {
             TextView tt3 = (TextView) v.findViewById(R.id.thoigan);
             tt3.setText(String.valueOf("Thời gian: " + p.getThoigian()));
             TextView tt4 = (TextView) v.findViewById(R.id.khuvuc);
-            tt4.setText(String.valueOf("Khu vực: " + p.getDiadiem()));
-
-            Ion.with(getContext())
+            tt4.setText(String.valueOf("Khu vực: " + p.getKhuvuc()));
+            Picasso.with(getContext())
                     .load(p.getHinhs())
-                    .withBitmap()
                     .placeholder(R.drawable.ic_launcher)
                     .error(R.drawable.ic_launcher)
-                    .intoImageView((ImageView) v.findViewById(R.id.imgv_1));
+                    .into((ImageView) v.findViewById(R.id.imgv_1));
+//            Ion.with(getContext())
+//                    .load(p.getHinhs())
+//                    .withBitmap()
+//                    .placeholder(R.drawable.ic_launcher)
+//                    .error(R.drawable.ic_launcher)
+//                    .intoImageView((ImageView) v.findViewById(R.id.imgv_1));
         }
         return v;
     }
