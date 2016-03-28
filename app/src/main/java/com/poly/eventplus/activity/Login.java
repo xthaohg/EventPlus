@@ -2,15 +2,18 @@ package com.poly.eventplus.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -19,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.poly.eventplus.R;
+import com.poly.eventplus.model.Event;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -29,11 +33,15 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 public class Login extends Activity {
     TextView textView, logo;
@@ -44,7 +52,11 @@ public class Login extends Activity {
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String USERNAME = "userNameKey";
     public static final String PASS = "passKey";
+    public static final String IDUSER = "iduserKey";
+    public static final String EMAIl = "emailKey";
     SharedPreferences sharedpreferences;
+    ArrayList<Event> mang;
+    String iduser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +64,7 @@ public class Login extends Activity {
         setContentView(R.layout.login);
         String fontPath = "fonts/FREEBSC_.ttf";
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
+
         Typeface tf = Typeface.createFromAsset(getAssets(), fontPath);
         logo = (TextView) findViewById(R.id.logo);
         logo.setTypeface(tf);
@@ -85,8 +98,15 @@ public class Login extends Activity {
                 });
             }
         });
+        //getBunlde();
     }
-
+    public void getBunlde() {
+        Bundle extras = getIntent().getExtras();
+        String value1 = extras.getString("username");
+        String value2 = extras.getString("pass");
+        edtuser.setText(value1);
+        edtpass.setText(value2);
+    }
     private void submitForm() {
         if (!validateName()) {
             return;
@@ -155,6 +175,7 @@ public class Login extends Activity {
     }
 
 
+
     class goiweb extends AsyncTask<String, Integer, String> {
 
         @Override
@@ -164,27 +185,53 @@ public class Login extends Activity {
 
         @Override
         protected void onPostExecute(String s) {
-            Log.d("Tra ve: ", s);
-            if (s.equals("NO")) {
-                Toast.makeText(getApplicationContext(), "Sai tên đăng nhập hoặc mật khẩu", Toast.LENGTH_LONG).show();
+
+            try {
+                if (s.endsWith("OK")) {
+                    Log.d("status", "OK");
+                    JSONObject jsonObject = new JSONObject(s);
+                    Log.d("Json", s);
+                    mang = new ArrayList<>();
+                    Event item = new Event();
+                    item.setIdUsername(jsonObject.getString("mb_id"));
+                    item.setUsername(jsonObject.getString("mb_username"));
+                    item.setEmail(jsonObject.getString("mb_email"));
+                    item.setMatKhau(jsonObject.getString("mb_pass"));
+                    mang.add(item);
+                    saveData(item.getUsername(), item.getMatKhau(), item.getEmail(), item.getIdUsername());
+                    iduser = item.getIdUsername();
+                    Log.d("mb_id", iduser + "");
+                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                    i.putExtra("username", sharedpreferences.getString(USERNAME,""));
+                    i.putExtra("email", sharedpreferences.getString(EMAIl, ""));
+                    startActivityForResult(i, REQUEST_CODE);
+                    finish();
+                }
+                if (s.endsWith("NO")) {
+                    Toast.makeText(getApplicationContext(), "Tên đăng nhập hoặc mật khẩu sai", Toast.LENGTH_SHORT).show();
+                }
+
+
+            } catch (JSONException e1) {
+                e1.printStackTrace();
             }
-            if (s.equals("OK")) {
-                Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                i.putExtra("username", edtuser.getText().toString());
-                i.putExtra("pass", edtpass.getText().toString());
-                saveData(edtuser.getText().toString(), edtpass.getText().toString());
-                startActivityForResult(i, REQUEST_CODE);
-                finish();
-            }
-            Log.d("xx ", s);
+
         }
 
     }
 
-    private void saveData(String username, String Pass) {
+    private void saveData(String username, String Pass, String Email, String id) {
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.putString(USERNAME, username);
         editor.putString(PASS, Pass);
+        editor.putString(EMAIl, Email);
+        editor.putString(IDUSER, id);
+        editor.commit();
+    }
+
+    private void clearData() {
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.clear();
         editor.commit();
     }
 
@@ -233,4 +280,33 @@ public class Login extends Activity {
         return kq;
     }
 
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle("Thông báo");
+        alertDialogBuilder
+                .setMessage("Bạn muốn thoát ứng dụng không?")
+                .setCancelable(false)
+                .setPositiveButton("Có",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                moveTaskToBack(true);
+                                clearData();
+                                android.os.Process.killProcess(android.os.Process.myPid());
+                                System.exit(1);
+
+                            }
+                        })
+
+                .setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
 }

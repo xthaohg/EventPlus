@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -18,11 +20,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewTreeObserver;
-import android.view.animation.AccelerateInterpolator;
+import android.view.View;
 import android.widget.TextView;
 
 import com.poly.eventplus.R;
@@ -37,30 +39,39 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private TextView txtUserName;
+    private TextView txtUserName, txtEmail;
 
-    private Toolbar mToolbar;
     public static final String MyPREFERENCES = "MyPrefs";
-    public static final String USERNAME = "userNameKey";
-    public static final String PASS = "passKey";
-    public static final String REMEMBER = "remember";
     SharedPreferences sharedpreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        checkInternet();
+        controller();
+        getBunlde();
+    }
+
+    public void controller() {
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         txtUserName = (TextView) findViewById(R.id.tv_username);
-        // tc = (TextView)findViewById(R.id.tv)
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        txtEmail = (TextView) findViewById(R.id.tv_email);
+        txtUserName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("click: ", "Clicked user");
+            }
+        });
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.mipmap.ic_menu_white_18dp);
         actionBar.setDisplayHomeAsUpEnabled(true);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-
+        viewPager.setOffscreenPageLimit(3);
         setupViewPager(viewPager);
         tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
@@ -69,38 +80,118 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.navigation_item_book:
-                        Intent i = new Intent(getApplicationContext(), Book.class);
-                        startActivity(i);
+                    case R.id.navigation_item_Hoithao:
+                        Intent intent = new Intent(getApplicationContext(), Seminor.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("title", getText(R.string.hoithao).toString());
+                        bundle.putString("API", "http://trieu.svnteam.net/Api/SelectDanhmuc1.php");
+                        intent.putExtra("mybundle", bundle);
+                        startActivity(intent);
                         return true;
-                    case R.id.register:
-                        Intent ri = new Intent(getApplicationContext(), Register.class);
-                        startActivity(ri);
+                    case R.id.navigation_item_Vanhoa:
+                        intent = new Intent(getApplicationContext(), Seminor.class);
+                        bundle = new Bundle();
+                        bundle.putString("title", getText(R.string.vanhoa).toString());
+                        bundle.putString("API", "http://trieu.svnteam.net/Api/SelectDanhmuc2.php");
+                        intent.putExtra("mybundle", bundle);
+                        startActivity(intent);
                         return true;
+                    case R.id.navigation_item_Hoicho:
+                        intent = new Intent(getApplicationContext(), Seminor.class);
+                        bundle = new Bundle();
+                        bundle.putString("title", getText(R.string.hoicho).toString());
+                        bundle.putString("API", "http://trieu.svnteam.net/Api/SelectDanhmuc3.php");
+                        intent.putExtra("mybundle", bundle);
+                        startActivity(intent);
+                        return true;
+                    case R.id.navigation_item_Thethao:
+                        intent = new Intent(getApplicationContext(), Seminor.class);
+                        bundle = new Bundle();
+                        bundle.putString("title", getText(R.string.thethao).toString());
+                        bundle.putString("API", "http://trieu.svnteam.net/Api/SelectDanhmuc4.php");
+                        intent.putExtra("mybundle", bundle);
+                        startActivity(intent);
+                        return true;
+                    case R.id.navigation_item_Khaichuong:
+                        intent = new Intent(getApplicationContext(), Seminor.class);
+                        bundle = new Bundle();
+                        bundle.putString("title", getText(R.string.khaitruong).toString());
+                        bundle.putString("API", "http://trieu.svnteam.net/Api/SelectDanhmuc5.php");
+                        intent.putExtra("mybundle", bundle);
+                        startActivity(intent);
+                        return true;
+                    case R.id.navigation_item_Khac:
+                        intent = new Intent(getApplicationContext(), Seminor.class);
+                        bundle = new Bundle();
+                        bundle.putString("title", getText(R.string.skkhac).toString());
+                        bundle.putString("API", "http://trieu.svnteam.net/Api/SelectDanhmuc6.php");
+                        intent.putExtra("mybundle", bundle);
+                        startActivity(intent);
+                        return true;
+                    case R.id.history:
+                        intent = new Intent(getApplicationContext(), HistoryActivity.class);
+                        startActivity(intent);
+                        return true;
+                    case R.id.logout:
+                        clearData();
+                        finish();
+                        Intent lg = new Intent(getApplicationContext(), Login.class);
+                        startActivity(lg);
                 }
                 return true;
             }
         });
-        //Nhận gói dữ liệu từ Intent gửi đến
-        Bundle extras = getIntent().getExtras();
-
-        //Nếu không có dữ liệu thì không làm gì nữa
-        if (extras == null) {
-            return;
-        }
-
-        //Nếu có dữ liệu thì lấy đưa vào 2 chuỗi với 2 key tương ứng
-        String value1 = extras.getString("username");
-        String value2 = extras.getString("Value2");
-
-        //kiểm tra đưa dữ liệu 1 hiển thị lên EditText1
-        if (value1 != null) {
-            txtUserName.setText("ID: " + value1);
-
-        }
-
     }
 
+    public void checkInternet() {
+        if (isOnline() == true) {
+
+        } else {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                    this);
+
+            // Setting Dialog Title
+            alertDialog.setTitle("Thông báo");
+
+            // Setting Dialog Message
+            alertDialog.setMessage("Bạn có muốn bật wifi để sử dụng Event Plus không?");
+
+            // Setting Icon to Dialog
+            // alertDialog.setIcon(R.drawable.ic_launcher);
+
+            // Setting Positive "Yes" Button
+            alertDialog.setPositiveButton("Có",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            onPause();
+                            // Activity transfer to wifi settings
+                            startActivityForResult(new Intent(Settings.ACTION_WIFI_SETTINGS), 0);
+                            onDestroy();
+                        }
+                    }
+            );
+
+            // Setting Negative "NO" Button
+            alertDialog.setNegativeButton("Không",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Write your code here to invoke NO event
+                            dialog.cancel();
+                            finish();
+                        }
+                    });
+            // Showing Alert Message
+            alertDialog.show();
+        }
+    }
+
+    public void getBunlde() {
+        Bundle extras = getIntent().getExtras();
+        String value1 = extras.getString("username");
+        String value2 = extras.getString("email");
+        txtUserName.setText("ID: " + value1);
+        txtEmail.setText("Email:" + value2);
+    }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -132,7 +223,6 @@ public class MainActivity extends AppCompatActivity {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
         }
-
         @Override
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
@@ -156,14 +246,13 @@ public class MainActivity extends AppCompatActivity {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
                 return true;
-            case R.id.action_settings:
-                return true;
-            case R.id.action_logout:
-                clearData();
-                Intent lg = new Intent(getApplicationContext(), Login.class);
-                startActivity(lg);
-        }
 
+            case R.id.search_bar:
+                Intent o = new Intent(getApplicationContext(), Search.class);
+                startActivity(o);
+                return true;
+
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -177,7 +266,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-
             showExitDialog();
             return true;
         }
@@ -186,7 +274,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void showExitDialog() {
         // TODO Auto-generated method stub
-
         AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
         adb.setTitle("Cảnh báo");
         adb.setMessage("Bạn có thật sự muốn thoát ?");
@@ -197,12 +284,9 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
-
         adb.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-
             @Override
             public void onClick(DialogInterface arg0, int arg1) {
-
                 arg0.dismiss();
             }
         });
@@ -210,4 +294,9 @@ public class MainActivity extends AppCompatActivity {
         ad.show();
     }
 
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
 }

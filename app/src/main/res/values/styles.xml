@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -9,9 +9,25 @@
         <item name="android:textColorPrimary">@color/colorFontWhite</item>
     </style>
 
+    <style name="PopupTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorAccent">@color/colorFontWhite</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorBackground">@color/colorPrimary</item>
+        <item name="android:textColorPrimary">@color/colorFontWhite</item>
+    </style>
+
     <style name="MyButton" parent="Theme.AppCompat.Light">
         <item name="colorControlHighlight">@color/colorbutton</item>
         <item name="colorButtonNormal">@color/colorPrimaryDark</item>
     </style>
-
+    <style name="dialog_light" parent="@android:style/Theme.Dialog">
+        <item name="@android:windowBackground">@color/whitegrey</item>
+        <item name="@android:textColor">@color/black</item>
+    </style>
+    <style name="StarRatingBar" parent="@android:style/Widget.Holo.RatingBar.Indicator">
+        <item name="android:isIndicator">false</item>
+        <item name="android:minHeight">35dip</item>
+        <item name="android:maxHeight">38dip</item>
+    </style>
 </resources>

@@ -17,6 +17,7 @@
     <string name="noidung">Nội dung:</string>
     <string name="textChude">Chủ đề: </string>
     <string name="textSonguoi">Số người: </string>
+    <string name="textSonguoithamdu">Số người tham gia: </string>
     <string name="textDonvi">Đơn vị: </string>
     <string name="textThoigian">Thời gian: </string>
     <string name="textDiadiem">Địa điểm: </string>
@@ -28,4 +29,31 @@
     <string name="khaitruong">Khai trương và Khuyến mãi</string>
     <string name="skkhac">Sự kiện khác</string>
     <string name="dangki">Đăng kí</string>
+    <string name="timkiem">Tìm Kiếm</string>
+
+    <string-array name="diadiem">
+        <item>Khu Vực</item>
+        <item>Hà Nội</item>
+        <item>Tp Hồ Chí Minh</item>
+        <item>Đà Nẵng</item>
+        <item>Khu Vực Khác</item>
+
+    </string-array>
+    <string-array name="thoigian">
+        <item>Thời Gian</item>
+        <item>7 Ngày Tới</item>
+        <item>1 Tháng Tới</item>
+        <item>Tất Cả</item>
+
+    </string-array>
+    <string-array name="danhmuc">
+        <item>Danh Mục</item>
+        <item>Hội thảo, Đ.Tạo</item>
+        <item>Văn hóa, G.Trí</item>
+        <item>Hội chợ, T.Lãm</item>
+        <item>Thể thao, D.Lich</item>
+        <item>Khai trương, KM</item>
+        <item>Sự kiện khác</item>
+
+    </string-array>
 </resources>

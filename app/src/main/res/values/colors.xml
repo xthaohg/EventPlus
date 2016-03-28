@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="black">#FF000000</color>
+    <color name="whitegrey">#FFF2F2F2</color>
     <color name="colorPrimary">#4CAF50</color>
     <color name="colorPrimaryDark">#388E3C</color>
     <color name="textColorPrimary">#000000</color>
@@ -11,4 +13,5 @@
     <color name="backgoundx">#E0E0E0</color>
     <color name="colorbutton">#81C784</color>
     <color name="red">#ff303a</color>
+    <color name="textGray">#757575</color>
 </resources>

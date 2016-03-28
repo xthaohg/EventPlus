@@ -8,7 +8,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.koushikdutta.ion.Ion;
 import com.poly.eventplus.R;
 import com.poly.eventplus.model.Event;
 import com.squareup.picasso.Picasso;
@@ -43,11 +42,11 @@ public class EventAdapter extends ArrayAdapter<Event> {
             TextView tt1 = (TextView) v.findViewById(R.id.tieude);
             tt1.setText(p.getTens());
             TextView tt2 = (TextView) v.findViewById(R.id.danhmuc);
-            tt2.setText(String.valueOf("Danh mục: " + p.getDanhmuc()));
+            tt2.setText(p.getDanhmuc());
             TextView tt3 = (TextView) v.findViewById(R.id.thoigan);
-            tt3.setText(String.valueOf("Thời gian: " + p.getThoigian()));
+            tt3.setText(p.getThoigian());
             TextView tt4 = (TextView) v.findViewById(R.id.khuvuc);
-            tt4.setText(String.valueOf("Khu vực: " + p.getKhuvuc()));
+            tt4.setText(p.getKhuvuc());
             Picasso.with(getContext())
                     .load(p.getHinhs())
                     .placeholder(R.drawable.ic_launcher)

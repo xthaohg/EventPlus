@@ -3,28 +3,29 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="130dp"
-    android:background="@color/colorPrimary"
+    android:background="@color/colorPrimaryDark"
     android:gravity="bottom"
     android:orientation="vertical"
-    android:paddingLeft="16dp"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark">
+    android:paddingLeft="16dp">
 
     <ImageView
         android:id="@+id/avatar"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/user"
-        android:layout_gravity="center"/>
+        android:src="@drawable/user" />
 
     <TextView
         android:id="@+id/tv_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:textColor="@color/colorFontWhite" />
 
     <TextView
-        android:id="@+id/tv_pass"
+        android:id="@+id/tv_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/colorFontWhite" />
+
+
 </LinearLayout>

@@ -2,13 +2,22 @@ package com.poly.eventplus.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.poly.eventplus.R;
 
@@ -32,6 +41,8 @@ public class Splash extends Activity {
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String USERNAME = "userNameKey";
     public static final String PASS = "passKey";
+    public static final String IDUSER = "iduserKey";
+    public static final String EMAIl = "emailKey";
     SharedPreferences sharedpreferences;
 
     TextView textUser, textPass;
@@ -41,18 +52,68 @@ public class Splash extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        checkInternet();
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        textPass = (TextView) findViewById(R.id.txtPass);
-        textUser = (TextView) findViewById(R.id.txtUser);
-
-        new Handler().postDelayed(new Runnable() {
+        ImageView img = (ImageView) findViewById(R.id.logonew);
+        img.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                /* Create an Intent that will start the Menu-Activity. */
-                loadData();
+            public void onClick(View v) {
+                finish();
+                startActivity(getIntent());
             }
-        }, SPLASH_DISPLAY_LENGTH);
+        });
 
+
+    }
+
+    public void checkInternet() {
+        if (isOnline() == true) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                /* Create an Intent that will start the Menu-Activity. */
+                    loadData();
+                }
+            }, SPLASH_DISPLAY_LENGTH);
+
+        } else {
+            AlertDialog.Builder alertDialog = new AlertDialog.Builder(
+                    this);
+
+            // Setting Dialog Title
+            alertDialog.setTitle("Thông báo");
+
+            // Setting Dialog Message
+            alertDialog.setMessage("Bạn có muốn bật wifi để sử dụng Event Plus không?");
+
+            // Setting Icon to Dialog
+            // alertDialog.setIcon(R.drawable.ic_launcher);
+
+            // Setting Positive "Yes" Button
+            alertDialog.setPositiveButton("Có",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            onPause();
+                            // Activity transfer to wifi settings
+                            startActivityForResult(new Intent(Settings.ACTION_WIFI_SETTINGS), 0);
+                            onDestroy();
+                        }
+                    });
+
+            // Setting Negative "NO" Button
+            alertDialog.setNegativeButton("Không",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Write your code here to invoke NO event
+                            dialog.cancel();
+                            finish();
+                        }
+                    });
+
+            // Showing Alert Message
+            alertDialog.show();
+
+        }
     }
 
     class goiweb extends AsyncTask<String, Integer, String> {
@@ -65,25 +126,28 @@ public class Splash extends Activity {
         @Override
         protected void onPostExecute(String s) {
             Log.d("Tra ve: ", s);
-            if (s.equals("NO")) {
-                Intent i = new Intent(getApplicationContext(), Login.class);
-                startActivity(i);
-            }
-            if (s.equals("OK")) {
-                Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                i.putExtra("username", textUser.getText().toString());
-                i.putExtra("pass", textPass.getText().toString());
-                startActivityForResult(i, REQUEST_CODE);
-                finish();
-            }
+            Intent i = new Intent(getApplicationContext(), MainActivity.class);
+            i.putExtra("username", sharedpreferences.getString(USERNAME, ""));
+            i.putExtra("email", sharedpreferences.getString(EMAIl, ""));
+            startActivityForResult(i, REQUEST_CODE);
+            finish();
+//            if (s.equals("NO")) {
+//                Intent i = new Intent(getApplicationContext(), Login.class);
+//                startActivity(i);
+//            }
+//            if (s.equals("OK")) {
+//                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+//                i.putExtra("username", textUser.getText().toString());
+//                i.putExtra("pass", textPass.getText().toString());
+//                startActivityForResult(i, REQUEST_CODE);
+//                finish();
+//            }
 
         }
 
     }
 
     private void loadData() {
-        textUser.setText(sharedpreferences.getString(USERNAME, ""));
-        textPass.setText(sharedpreferences.getString(PASS, ""));
         if (sharedpreferences.getString(USERNAME, "").equals("") && sharedpreferences.getString(PASS, "").equals("")) {
             Intent i = new Intent(getApplicationContext(), Login.class);
             startActivity(i);
@@ -125,4 +189,13 @@ public class Splash extends Activity {
 
         return kq;
     }
+
+    public boolean isOnline() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+
 }

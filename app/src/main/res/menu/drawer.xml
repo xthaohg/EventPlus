@@ -1,42 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    >
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:title="Danh mục">
         <menu>
             <item
 
-                android:id="@+id/navigation_item_book"
+                android:id="@+id/navigation_item_Hoithao"
                 android:icon="@drawable/sach"
                 android:title="@string/hoithao" />
             <item
-                android:id="@+id/navigation_item_sport"
+                android:id="@+id/navigation_item_Vanhoa"
                 android:icon="@drawable/vanhoa"
                 android:title="@string/vanhoa" />
             <item
-                android:id="@+id/v"
+                android:id="@+id/navigation_item_Hoicho"
                 android:icon="@drawable/hoicho"
                 android:title="@string/hoicho" />
             <item
-                android:id="@+id/vf"
+                android:id="@+id/navigation_item_Thethao"
                 android:icon="@drawable/thethao"
                 android:title="@string/thethao" />
             <item
-
+                android:id="@+id/navigation_item_Khaichuong"
                 android:icon="@drawable/khaichuong"
                 android:title="@string/khaitruong" />
             <item
-
+                android:id="@+id/navigation_item_Khac"
                 android:icon="@drawable/khac"
                 android:title="@string/skkhac" />
         </menu>
     </item>
     <item android:title="Người dùng">
+
         <menu>
+            <item android:icon="@drawable/history"
+                android:id="@+id/history"
+                android:title="Lịch sử" />
             <item
-                android:id="@+id/register"
+                android:id="@+id/logout"
                 android:icon="@drawable/info"
-                android:title="@string/dangki" />
+                android:title="Đăng Xuất" />
         </menu>
     </item>
 </menu>

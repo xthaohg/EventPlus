@@ -1,22 +1,25 @@
 package com.poly.eventplus.view;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.poly.eventplus.R;
 import com.poly.eventplus.activity.NewEvent;
-import com.poly.eventplus.adapter.EventAdapter;
+import com.poly.eventplus.adapter.RecyclerAdapter;
 import com.poly.eventplus.model.Event;
 
 import org.apache.http.HttpEntity;
@@ -39,9 +42,13 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 
 public class TwoFragment extends Fragment {
-    ListView lv;
+
+
+    private RecyclerAdapter recyclerAdapter;
     ArrayList<Event> mang;
-    SwipeRefreshLayout mSwipeRefreshLayout;
+    SwipeRefreshLayout refreshLayout;
+    RecyclerView recyclerView;
+
 
     public TwoFragment() {
         super();
@@ -49,13 +56,65 @@ public class TwoFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.twofragment, container, false);
-
+        View view = inflater.inflate(R.layout.twofragment, container, false);
+        return view;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        new ReadJson().execute("http://trieu.svnteam.net/Api/SelectListOrderbyTime1.php");
+    }
+
+    public interface ClickListener {
+        void onClick(View view, int position);
+
+        void onLongClick(View view, int position);
+
+    }
+
+    public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
+
+        private GestureDetector gestureDetector;
+        private ClickListener clickListener;
+
+        public RecyclerTouchListener(Context context, final RecyclerView recyclerView, final TwoFragment.ClickListener clickListener) {
+            this.clickListener = clickListener;
+            gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return true;
+                }
+
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
+                    if (child != null && clickListener != null) {
+                        clickListener.onLongClick(child, recyclerView.getChildPosition(child));
+                    }
+                }
+            });
+        }
+
+
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            View child = rv.findChildViewUnder(e.getX(), e.getY());
+            if (child != null && clickListener != null && gestureDetector.onTouchEvent(e)) {
+                clickListener.onClick(child, rv.getChildPosition(child));
+            }
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+        }
 
 
     }
@@ -64,22 +123,70 @@ public class TwoFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mSwipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.activity_main_swipe_refresh_layout2);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        refreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.swipe_layout2);
+        recyclerView = (RecyclerView) getActivity().findViewById(R.id.recyclerview2);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 mang.clear();
-                new ReadJson().execute("http://trieu.svnteam.net/Api/selectlist.php");
+                new ReadJson().execute("http://trieu.svnteam.net/Api/SelectListOrderbyTime1.php");
+
             }
+
+
         });
-        lv = (ListView) getActivity().findViewById(R.id.lv_2);
-        mang = new ArrayList<Event>();
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                new ReadJson().execute("http://trieu.svnteam.net/Api/selectlist.php");
+                new ReadJson().execute("http://trieu.svnteam.net/Api/SelectListOrderbyTime1.php");
             }
         });
+
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), recyclerView, new ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                String ten1 = mang.get(position).getTens();
+                Log.d("i", ten1);
+                String img = mang.get(position).getHinhs();
+                Log.d("i", img);
+                int sdt1 = mang.get(position).getSdt();
+                int id = mang.get(position).getId();
+                double rate = mang.get(position).getRate();
+                String time1 = mang.get(position).getThoigian();
+                String danhmuc1 = mang.get(position).getDanhmuc();
+                String khuvuc1 = mang.get(position).getKhuvuc();
+                String sokhach1 = mang.get(position).getSokhach();
+                String donvi1 = mang.get(position).getDonvi();
+                String diadiem1 = mang.get(position).getDiadiem();
+                String mota1 = mang.get(position).getMota();
+                int countorder = mang.get(position).getCountOrder();
+                Intent intent = new Intent(getActivity(), NewEvent.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt("id",id);
+                bundle.putString("ten", ten1);
+                bundle.putString("img", img);
+                bundle.putString("time", time1);
+                bundle.putString("danhmuc", danhmuc1);
+                bundle.putString("khuvuc", khuvuc1);
+                bundle.putString("sokhach", sokhach1);
+                bundle.putString("donvi", donvi1);
+                bundle.putInt("Countoder", countorder);
+                bundle.putInt("sdt", sdt1);
+                bundle.putString("diadiem", diadiem1);
+                bundle.putString("mota", mota1);
+                bundle.putInt("Countoder", countorder);
+                bundle.putDouble("rate", rate);
+                intent.putExtra("mybundle", bundle);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+
+            }
+        }));
+
 
     }
 
@@ -96,63 +203,41 @@ public class TwoFragment extends Fragment {
             Log.d("Json ", s);
             try {
                 JSONArray jsonArray = new JSONArray(s);
+                mang = new ArrayList<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject sp = jsonArray.getJSONObject(i);
-                    mang.add(new Event(
-                            sp.getString("name"),
-                            sp.getString("time"),
-                            sp.getString("img"),
-                            sp.getString("danhmuc"),
-                            sp.getString("khuvuc"),
-                            sp.getString("sokhach"),
-                            sp.getString("donvi"),
-                            sp.getString("mota"),
-                            sp.getString("diadiem"),
-                            sp.getInt("sdt")
-                    ));
+                    Event item = new Event();
+                    item.setRate(sp.getDouble("Avgrate"));
+                    item.setCountOrder(sp.getInt("Countoder"));
+                    item.setTens(sp.getString("name"));
+                    item.setDanhmuc(sp.getString("danhmuc"));
+                    item.setDiadiem(sp.getString("diadiem"));
+                    item.setDonvi(sp.getString("donvi"));
+                    item.setKhuvuc(sp.getString("khuvuc"));
+                    item.setMota(sp.getString("mota"));
+                    String time1 = sp.getString("time");
+                    String subtime = time1.substring(0, 16);
+                    item.setThoigian(subtime);
+                    item.setSdt(sp.getInt("sdt"));
+                    item.setSokhach(sp.getString("sokhach"));
+                    item.setHinhs(sp.getString("img"));
+                    item.setId(sp.getInt("id"));
+                    mang.add(item);
+                    Log.d("a", "" + mang);
+                    recyclerAdapter = new RecyclerAdapter(getActivity(), i, mang);
+                    recyclerView.setAdapter(recyclerAdapter);
+                    recyclerAdapter.notifyDataSetChanged();
+                    // stopping swipe refresh
+                    refreshLayout.setRefreshing(false);
                 }
-                EventAdapter eventAdapter = new EventAdapter(getActivity(), R.layout.event_adapter, mang);
-                if (mSwipeRefreshLayout.isRefreshing()) {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                }
-                lv.setAdapter(eventAdapter);
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String ten = mang.get(position).getTens();
-                    Log.d("i", ten);
-                    String img = mang.get(position).getHinhs();
-                    Log.d("i", img);
-                    int sdt = mang.get(position).getSdt();
-                    String time = mang.get(position).getThoigian();
-                    String danhmuc = mang.get(position).getDanhmuc();
-                    String khuvuc = mang.get(position).getKhuvuc();
-                    String sokhach = mang.get(position).getSokhach();
-                    String donvi = mang.get(position).getDonvi();
-                    String diadiem = mang.get(position).getDiadiem();
-                    String mota = mang.get(position).getMota();
-                    Intent intent = new Intent(getActivity(), NewEvent.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("ten", ten);
-                    bundle.putString("img", img);
-                    bundle.putString("time", time);
-                    bundle.putString("danhmuc", danhmuc);
-                    bundle.putString("khuvuc", khuvuc);
-                    bundle.putString("sokhach", sokhach);
-                    bundle.putString("donvi", donvi);
-                    bundle.putInt("sdt", sdt);
-                    bundle.putString("diadiem", diadiem);
-                    bundle.putString("mota", mota);
-                    intent.putExtra("mybundle", bundle);
-                    startActivity(intent);
-                }
-            });
-            // Toast.makeText(two.this, s, Toast.LENGTH_LONG).show();
+
         }
+
+
     }
 
     //DOc file json ve may
@@ -205,3 +290,4 @@ public class TwoFragment extends Fragment {
         return xml;
     }
 }
+

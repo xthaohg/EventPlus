@@ -1,22 +1,39 @@
 package com.poly.eventplus.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.VectorDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.poly.eventplus.R;
+import com.poly.eventplus.adapter.imageHelper;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -34,21 +51,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Register extends Activity {
+    private static final int REQUEST_CODE = 10;
+
     TextView textView;
     EditText edtuser, edtemail, edtpass, edtpassagain;
     TextInputLayout inputLayoutName, inputLayoutEmail, inputLayoutPassword, inputLayoutPasswordAG;
     Button btn1, btn2;
+    private Bitmap bitmap;
+    private int PICK_IMAGE_REQUEST = 1;
+    private ImageView img;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
-        textView = (TextView) findViewById(R.id.tv1);
-        edtemail = (EditText) findViewById(R.id.edt_email);
-        edtpass = (EditText) findViewById(R.id.edt_pass);
-        edtpassagain = (EditText) findViewById(R.id.edt_passagain);
-        edtuser = (EditText) findViewById(R.id.edt_username);
-        btn2 = (Button) findViewById(R.id.btn_datlai);
+        Controls();
+
+        img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showFileChooser();
+            }
+        });
         btn2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,18 +82,6 @@ public class Register extends Activity {
                 edtuser.setText("");
             }
         });
-        inputLayoutEmail = (TextInputLayout) findViewById(R.id.input_layout_emaildk);
-        inputLayoutName = (TextInputLayout) findViewById(R.id.input_layout_userdk);
-        inputLayoutPassword = (TextInputLayout) findViewById(R.id.input_layout_passdk);
-        inputLayoutPasswordAG = (TextInputLayout) findViewById(R.id.input_layout_passagaindk);
-
-        edtuser.addTextChangedListener(new MyTextWatcher(edtuser));
-        edtpassagain.addTextChangedListener(new MyTextWatcher(edtpassagain));
-        edtpass.addTextChangedListener(new MyTextWatcher(edtpass));
-        edtemail.addTextChangedListener(new MyTextWatcher(edtemail));
-
-
-        btn1 = (Button) findViewById(R.id.btn_dangkipost);
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,7 +89,51 @@ public class Register extends Activity {
             }
         });
 
+        edtuser.addTextChangedListener(new MyTextWatcher(edtuser));
+        edtpassagain.addTextChangedListener(new MyTextWatcher(edtpassagain));
+        edtpass.addTextChangedListener(new MyTextWatcher(edtpass));
+        edtemail.addTextChangedListener(new MyTextWatcher(edtemail));
 
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri filePath = data.getData();
+            try {
+                //Getting the Bitmap from Gallery
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                //Setting the Bitmap to ImageView
+                img.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void showFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    public void Controls() {
+        btn1 = (Button) findViewById(R.id.btn_dangkipost);
+        inputLayoutEmail = (TextInputLayout) findViewById(R.id.input_layout_emaildk);
+        inputLayoutName = (TextInputLayout) findViewById(R.id.input_layout_userdk);
+        inputLayoutPassword = (TextInputLayout) findViewById(R.id.input_layout_passdk);
+        inputLayoutPasswordAG = (TextInputLayout) findViewById(R.id.input_layout_passagaindk);
+        img = (ImageView) findViewById(R.id.imgavatar);
+        textView = (TextView) findViewById(R.id.tv1);
+        edtemail = (EditText) findViewById(R.id.edt_email);
+        edtpass = (EditText) findViewById(R.id.edt_pass);
+        edtpassagain = (EditText) findViewById(R.id.edt_passagain);
+        edtuser = (EditText) findViewById(R.id.edt_username);
+        btn2 = (Button) findViewById(R.id.btn_datlai);
     }
 
     private void submitForm() {
@@ -199,7 +255,6 @@ public class Register extends Activity {
         }
     }
 
-
     class goiweb extends AsyncTask<String, Integer, String> {
 
         @Override
@@ -211,9 +266,13 @@ public class Register extends Activity {
         protected void onPostExecute(String s) {
             Log.d("Tra ve ", s);
             if (s.equals("OK")) {
-                Toast.makeText(getApplicationContext(), "Đăng kí thành công", Toast.LENGTH_LONG).show();
-                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                Toast.makeText(getApplicationContext(), "Đăng kí thành công!", Toast.LENGTH_SHORT);
+                Intent i = new Intent(getApplicationContext(), Login.class);
+                i.putExtra("username", edtuser.getText().toString());
+                i.putExtra("pass", edtpass.getText().toString());
+                startActivityForResult(i, REQUEST_CODE);
                 startActivity(i);
+                finish();
             }
             if (s.equals("NO")) {
                 Toast.makeText(getApplicationContext(), "Tên đăng nhập đã có người sử dụng", Toast.LENGTH_LONG).show();
@@ -257,6 +316,5 @@ public class Register extends Activity {
 
         return kq;
     }
-
 
 }
