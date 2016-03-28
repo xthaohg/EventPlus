@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -54,6 +55,7 @@ public class NewEvent extends AppCompatActivity {
     private RatingBar ratingBar, rbStatus;
     private Dialog rankDialog;
     Button btn, btnRate;
+    private WebView webView;
     public static final String MyPREFERENCES = "MyPrefs";
     public static final String USERNAME = "userNameKey";
     public static final String PASS = "passKey";
@@ -162,9 +164,9 @@ public class NewEvent extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (statusOrder){
+                if (statusOrder) {
                     new CancelOrder().execute("http://trieu.svnteam.net/Api/huydangky.php");
-                }else{
+                } else {
                     new Order().execute("http://trieu.svnteam.net/Api/oder.php");
                 }
             }
@@ -210,10 +212,13 @@ public class NewEvent extends AppCompatActivity {
                 rankDialog.show();
             }
         });
+        webView.getSettings().setJavaScriptEnabled(true);
+        String html =motas ;
+        webView.loadData(html, "text/html", "UTF-8");
     }
 
     public void controller() {
-
+        webView = (WebView) findViewById(R.id.webview);
         sharedpreferences = getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
         songuoithamdu = (TextView) findViewById(R.id.txtSonguoithamdu);
         btnRate = (Button) findViewById(R.id.btn_rate);
@@ -251,7 +256,7 @@ public class NewEvent extends AppCompatActivity {
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
                 Double rate = jsonObject.getDouble("Avgrate");
                 tvRate.setText((new DecimalFormat("0.0").format(rate)));
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
         }
@@ -305,18 +310,17 @@ public class NewEvent extends AppCompatActivity {
             String msg;
             try {
                 JSONObject jsonObject = new JSONObject(result);
-                if (jsonObject.has("join")){
+                if (jsonObject.has("join")) {
                     msg = jsonObject.getString("join");
                     if (msg.equals("yes")) {
                         statusOrder = true;
                         btn.setText("Hủy");
-                    }
-                    else if (msg.equals("no")){
+                    } else if (msg.equals("no")) {
                         btn.setText("Tham Dự");
                         statusOrder = false;
                     }
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
         }
@@ -372,7 +376,7 @@ public class NewEvent extends AppCompatActivity {
                 JSONArray jsonArray = new JSONArray(result);
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
                 String status = jsonObject.getString("status");
-                if (status.equals("OK")){
+                if (status.equals("OK")) {
                     statusOrder = true;
                     btn.setText("Hủy");
                     songuoithamdu.setText(jsonObject.getString("songuoidangky"));
@@ -381,7 +385,7 @@ public class NewEvent extends AppCompatActivity {
                 if (result.equals("NO")) {
                     Toast.makeText(getApplicationContext(), "Bạn đã đăng kí sự kiện này", Toast.LENGTH_LONG).show();
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
         }
@@ -435,7 +439,7 @@ public class NewEvent extends AppCompatActivity {
                 JSONArray jsonArray = new JSONArray(result);
                 JSONObject jsonObject = jsonArray.getJSONObject(0);
                 String status = jsonObject.getString("status");
-                if (status.equals("OK")){
+                if (status.equals("OK")) {
                     statusOrder = false;
                     btn.setText("Tham Dự");
                     songuoithamdu.setText(jsonObject.getString("songuoidangky"));
@@ -444,7 +448,7 @@ public class NewEvent extends AppCompatActivity {
                 if (result.equals("NO")) {
                     Toast.makeText(getApplicationContext(), "Bạn đã đăng kí sự kiện này", Toast.LENGTH_LONG).show();
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
         }
