@@ -209,6 +209,7 @@ android:src="@drawable/location2"                    android:textColor="@color/c
                     android:textColor="@color/colorPrimaryDark" />
 
 
+
                 <TextView
                     android:id="@+id/txtSonguoithamdu"
                     android:layout_width="match_parent"
